@@ -1,4 +1,4 @@
-<html lang="pl">
+<html>
 <head>
 <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
@@ -7,28 +7,29 @@
 </head>
 <body>
 
- <form id="loginForm">
+<form>
 
-<input id="loginInput" name="loginInput" type="password">
-<input id="passInput" name="passInput" type="password">
-<input type="submit">
+  <input id="nickTb" name="nickTb" type="text" placeholder="nick">
+  <input id="passTb" name="passTb" type="password" placeholder="haslo">
+  <input id="submitBtn" type="submit" value="potwierdz">
 
- </form>
+</form>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  // document.getElementsByTagName("form").
+
+  const socket = io()
+  let nick =  document.getElementById("nickTb").textContent
+  let pass = document.getElementById("passTb").textContent
+  document.getElementById("submitBtn").addEventListener("click", (event) => {
+    event.preventDefault()
+    socket.emit("login", {nick:pass})
+
+  })
 
 
-
- <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.min.js"></script>
- <script src="/socket.io/socket.io.js"></script>
- 
- <script>
-
-  const socket = io();
-	document.getElementById("loginForm").addEventListener("submit", (event)=>{
-		event.preventDefault()
-		io.emit("login", {nick: document.getElementById("loginInput").textContent, pass: document.getElementById("passInput").textContent})
-	})
-
- </script>
-
- </body>
- </html>
+</script>
+</body>
+</html>

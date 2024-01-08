@@ -3,6 +3,8 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+const { rateLimit } = require("express-rate-limit")
+
 
 const indexRouter = require('./routes/index');
 
@@ -13,6 +15,15 @@ const app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 
+const limiter = rateLimit({
+  windowMs: 10 * 60 * 1000, // 5 minutes
+  limit: 175, // Limit each IP to 50 requests per `window` (here, per 15 minutes).
+  standardHeaders: 'draft-7', // draft-6: `RateLimit-*` headers; draft-7: combined `RateLimit` header
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers.
+  // store: ... , // Use an external store for consistency across multiple server instances.
+})
+
+app.use(limiter);
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -24,6 +35,17 @@ app.use('/', indexRouter);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
+});
+
+const io = require('socket.io')();
+
+io.use((socket, next) => {
+  // always triggered, even if the client tries to reach the custom namespace
+  next();
+});
+io.of("/").use((socket, next) => {
+  // triggered after the global middleware
+  next();
 });
 
 // error handler
