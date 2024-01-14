@@ -4,7 +4,8 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const { rateLimit } = require("express-rate-limit")
-
+const io = require("socket.io")()
+const cors = require('cors');
 
 const indexRouter = require('./routes/index');
 
@@ -23,6 +24,16 @@ const limiter = rateLimit({
   // store: ... , // Use an external store for consistency across multiple server instances.
 })
 
+io.sockets.on('connection', function (socket) {
+  console.log('client connect');
+});
+
+app.use(cors());
+
+app.use(function(req,res,next){
+  req.io = io;
+  next();
+});
 app.use(limiter);
 app.use(logger('dev'));
 app.use(express.json());
@@ -37,16 +48,6 @@ app.use(function(req, res, next) {
   next(createError(404));
 });
 
-const io = require('socket.io')();
-
-io.use((socket, next) => {
-  // always triggered, even if the client tries to reach the custom namespace
-  next();
-});
-io.of("/").use((socket, next) => {
-  // triggered after the global middleware
-  next();
-});
 
 // error handler
 app.use(function(err, req, res, next) {
