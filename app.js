@@ -4,12 +4,11 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const { rateLimit } = require("express-rate-limit")
-const io = require("socket.io")()
 const cors = require('cors');
 
+
+
 const indexRouter = require('./routes/index');
-
-
 const app = express();
 
 // view engine setup
@@ -24,16 +23,8 @@ const limiter = rateLimit({
   // store: ... , // Use an external store for consistency across multiple server instances.
 })
 
-io.sockets.on('connection', function (socket) {
-  console.log('client connect');
-});
 
 app.use(cors());
-
-app.use(function(req,res,next){
-  req.io = io;
-  next();
-});
 app.use(limiter);
 app.use(logger('dev'));
 app.use(express.json());
@@ -42,6 +33,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

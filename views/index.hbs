@@ -3,66 +3,55 @@
 <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="/stylesheets/style.css">
   <title>Document</title>
 </head>
 <body>
- <table id="bingoTable">
-    <tr>
-      <td id="field-1"></td>
-      <td id="field-2"></td>
-      <td id="field-3"></td>
-      <td id="field-4"></td>
-    </tr>
-    <tr>
-      <td id="field-5"></td>
-      <td id="field-6"></td>
-      <td id="field-7"></td>
-      <td id="field-8"></td>
 
-    </tr>
-    <tr>
-      <td id="field-9"></td>
-      <td id="field-10"></td>
-      <td id="field-11"></td>
-      <td id="field-12"></td>
+      <div class="row">
+        <div id="field-1" class="active field">1</div>
+        <div id="field-2" class="active field">2</div>
+        <div id="field-3" class="active field">3</div>
+        <div id="field-4" class="active field">4</div>
+      </div>
+      
+      <div class="row">
+      <div id="field-5" class="active field">5</div>
+      <div id="field-6" class="active field">6</div>
+      <div id="field-7" class="active field">7</div>
+      <div id="field-8" class="active field">8</div>
+      </div>
 
-    </tr>
-    <tr>
-      <td id="field-13"></td>
-      <td id="field-14"></td>
-      <td id="field-15"></td>
-      <td id="field-16"></td>
+      <div class="row">
 
-    </tr>
- </table>
- <script src="/socket.io/socket.io.js"></script>
+      <div id="field-9" class="active field">9</div>
+      <div id="field-10" class="active field">10</div>
+      <div id="field-11" class="active field">11</div>
+      <div id="field-12" class="active field">12</div>
+      </div>
+
+      <div class="row">
+
+        <div id="field-13" class="active field">13</div>
+        <div id="field-14" class="active field">14</div>
+        <div id="field-15" class="active field">15</div>
+        <div id="field-16" class="active field">16</div>
+      </div>
  <script type="text/javascript">
      document.addEventListener('DOMContentLoaded', function () {
-
-       const socket = io();
-       socket.on('connected', function (){
-         console.log("asdasd")
-       })
-
-       for (let i = 1; i <= 16; i++) {
-
-         let temp = document.getElementById(`field-${i}`)
-
-         temp.classList.add("active")
-
-       }
-
-       socket.on('touchChange', (args) => {
-         console.log(args)
-         console.log(args.message)
-         if (!document.getElementById(`field-${args.message}`).classList.contains("inactive")) {
-           document.getElementById(`field-${args.message}`).classList.remove("active")
-           document.getElementById(`field-${args.message}`).classList.add("inactive")
+       const es = new EventSource('/event');
+       
+       es.addEventListener('touchChange', (event) => {
+         if (!document.getElementById(`field-${event.data}`).classList.contains("inactive")) {
+           document.getElementById(`field-${event.data}`).classList.remove("active")
+           document.getElementById(`field-${event.data}`).classList.add("inactive")
          } else {
-           document.getElementById(`field-${args.message}`).classList.remove("inactive")
-           document.getElementById(`field-${args.message}`).classList.add("active")
+           document.getElementById(`field-${event.data}`).classList.remove("inactive")
+           document.getElementById(`field-${event.data}`).classList.add("active")
          }
        })
+
+
      })
 
  </script>
