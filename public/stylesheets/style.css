@@ -7,9 +7,10 @@ body {
   height: 150px;
   border-style: solid;
   margin: 5px;
+  text-align: center;
 }
 
-.row{
+.row {
   float: left;
 }
 

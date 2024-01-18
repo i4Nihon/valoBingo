@@ -38,10 +38,9 @@ router.get('/', function (req, res, next) {
     }
   }
 
-})
-  // .get('/event', sse.init)
+}).get('/event', sse.init)
 
-ComfyJS.Init(process.env.NICK, process.env.PASS, channels)
+ComfyJS.Init('bingobot416', '', channels)
 
 
 module.exports = router;
